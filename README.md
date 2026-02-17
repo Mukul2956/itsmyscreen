@@ -1,10 +1,24 @@
-# Real-Time Poll Rooms 🗳️
+<div align="center">
 
-A full-stack web application that enables users to create polls, share them via links, and collect votes with real-time result updates for all viewers.
+# 🗳️ Real-Time Poll Rooms
 
-## 🚀 Live Demo
+### _Create. Share. Vote. Watch Live._
 
-**Deployed Application:** [Your deployment URL here]
+[![Live Demo](https://img.shields.io/badge/demo-live-success?style=for-the-badge&logo=vercel)](YOUR_DEPLOYMENT_URL)
+[![GitHub](https://img.shields.io/badge/github-repository-blue?style=for-the-badge&logo=github)](YOUR_GITHUB_URL)
+[![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](LICENSE)
+
+**A modern, full-stack web application for creating polls and collecting votes with real-time updates powered by WebSockets.**
+
+[Live Demo](#) • [Features](#-features) • [Tech Stack](#-tech-stack) • [Getting Started](#-installation--setup)
+
+---
+
+</div>
+
+## 🎯 What is This?
+
+A lightning-fast poll application where anyone can create polls, share unique links, and watch results update in real-time as votes pour in. No sign-up required—just create and share!
 
 ## 📋 Table of Contents
 
@@ -19,40 +33,66 @@ A full-stack web application that enables users to create polls, share them via 
 
 ## ✨ Features
 
-### Core Functionality
-- ✅ **Poll Creation** - Create polls with custom questions and 2-10 options
-- ✅ **Shareable Links** - Generate unique, persistent URLs for each poll
-- ✅ **Single-Choice Voting** - Users can vote on one option per poll
-- ✅ **Real-Time Updates** - Live vote count updates using WebSockets (Socket.io)
-- ✅ **Data Persistence** - SQLite database ensures polls/votes survive server restarts
-- ✅ **Fair Voting** - Multiple anti-abuse mechanisms prevent duplicate voting
+<table>
+<tr>
+<td width="50%">
 
-### User Experience
-- 🎨 Modern, clean UI with TailwindCSS
-- 📱 Fully responsive design
-- ⚡ Instant feedback and smooth animations
-- 🔄 Automatic reconnection on network issues
-- 📊 Real-time vote percentage calculations
-- 🎯 Visual progress bars for results
+### 🚀 Core Functionality
+- 📝 **Instant Poll Creation** - 2-10 options supported
+- 🔗 **Unique Shareable Links** - UUID-based URLs
+- 🗳️ **One Vote per User** - Single-choice voting
+- ⚡ **Real-Time Updates** - WebSocket-powered live results
+- 💾 **Cloud Database** - Supabase PostgreSQL persistence
+- 🛡️ **Anti-Abuse System** - IP + Browser fingerprinting
 
-## 🛠️ Tech Stack
+</td>
+<td width="50%">
+
+### 🎨 User Experience
+- 📱 **Fully Responsive** - Mobile, tablet, desktop
+- 🎯 **Clean Modern UI** - Gradient designs with animations
+<div align="center">
 
 ### Backend
-- **Node.js** + **Express** - Server framework
-- **Socket.io** - Real-time bidirectional communication
-- **better-sqlite3** - Lightweight, embedded SQL database
-- **UUID** - Unique poll ID generation
-- **express-rate-limit** - API rate limiting
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
+![Socket.io](https://img.shields.io/badge/Socket.io-010101?style=for-the-badge&logo=socketdotio&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 
 ### Frontend
-- **React 18** - UI framework
-- **Vite** - Fast build tool and dev server
-- **React Router** - Client-side routing
-- **Socket.io-client** - WebSocket client
-- **Axios** - HTTP requests
-- **TailwindCSS** - Utility-first CSS framework
+![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![React Router](https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white)
 
-### Database Schema
+### 📊 Database Schema (Supabase PostgreSQL)
+
+```mermaid
+erDiagram
+    polls ||--o{ options : has
+    polls ||--o{ votes : receives
+    options ||--o{ votes : gets
+    
+    polls {
+        uuid id PK
+        text question
+        timestamp created_at
+    }
+    options {
+        uuid id PK
+        uuid poll_id FK
+        text text
+        int position
+    }
+    votes {
+        bigint id PK
+        uuid poll_id FK
+        uuid option_id FK
+        text ip_address
+        text fingerprint
+        timestamp voted_at
+    }
 ```sql
 polls
   - id (TEXT, PRIMARY KEY)
@@ -61,7 +101,9 @@ polls
 
 options
   - id (TEXT, PRIMARY KEY)
-  - poll_id (TEXT, FOREIGN KEY)
+> **Assignment Requirement:** "Include at least two mechanisms that reduce repeat/abusive voting"
+
+### 1. 🌐 IP Address TrackingEY)
   - text (TEXT)
   - position (INTEGER)
 
@@ -74,7 +116,7 @@ votes
   - voted_at (DATETIME)
 ```
 
-## 🛡️ Anti-Abuse Mechanisms
+## 🛡️ 🔍 Browser Fingerprinting
 
 ### 1. IP Address Tracking ⛔
 **What it prevents:**
@@ -100,7 +142,7 @@ votes
 - Generates a unique fingerprint from browser characteristics:
   - User agent, language, screen resolution
   - Color depth, timezone, hardware specs
-  - Canvas rendering signature
+  - Can🚦 Rate Limitinggnature
 - Stores fingerprint in `localStorage` for persistence
 - SHA-256 hash ensures privacy while maintaining uniqueness
 
