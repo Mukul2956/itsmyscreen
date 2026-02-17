@@ -4,13 +4,15 @@
 
 ### _Create. Share. Vote. Watch Live._
 
-[![Live Demo](https://img.shields.io/badge/demo-live-success?style=for-the-badge&logo=vercel)](YOUR_DEPLOYMENT_URL)
-[![GitHub](https://img.shields.io/badge/github-repository-blue?style=for-the-badge&logo=github)](YOUR_GITHUB_URL)
+[![Live Demo](https://img.shields.io/badge/demo-live-success?style=for-the-badge&logo=vercel)](https://itsmyscreen-self.vercel.app)
+[![GitHub](https://img.shields.io/badge/github-repository-blue?style=for-the-badge&logo=github)](https://github.com/YOUR_USERNAME/realtime-poll-app)
 [![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](LICENSE)
 
 **A modern, full-stack web application for creating polls and collecting votes with real-time updates powered by WebSockets.**
 
-[Live Demo](#) • [Features](#-features) • [Tech Stack](#-tech-stack) • [Getting Started](#-installation--setup)
+🚀 **Live App:** [itsmyscreen-self.vercel.app](https://itsmyscreen-self.vercel.app)
+
+[Features](#-features) • [Tech Stack](#-tech-stack) • [Documentation](#-anti-abuse-mechanisms) • [Getting Started](#-installation--setup)
 
 ---
 
