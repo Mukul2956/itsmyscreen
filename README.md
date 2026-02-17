@@ -22,14 +22,14 @@ A lightning-fast poll application where anyone can create polls, share unique li
 
 ## 📋 Table of Contents
 
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Anti-Abuse Mechanisms](#anti-abuse-mechanisms)
-- [Edge Cases Handled](#edge-cases-handled)
-- [Known Limitations](#known-limitations)
-- [Installation & Setup](#installation--setup)
-- [Deployment](#deployment)
-- [Project Structure](#project-structure)
+- [Features](#-features)
+- [Tech Stack](#-tech-stack)
+- [Anti-Abuse Mechanisms](#-anti-abuse-mechanisms)
+- [Edge Cases Handled](#-edge-cases-handled)
+- [Known Limitations](#-known-limitations)
+- [Installation & Setup](#-installation--setup)
+- [Deployment](#-deployment)
+- [Project Structure](#-project-structure)
 
 ## ✨ Features
 
@@ -51,6 +51,17 @@ A lightning-fast poll application where anyone can create polls, share unique li
 ### 🎨 User Experience
 - 📱 **Fully Responsive** - Mobile, tablet, desktop
 - 🎯 **Clean Modern UI** - Gradient designs with animations
+- 📊 **Live Progress Bars** - Animated vote percentages
+- 🔄 **Auto-Reconnect** - Network resilience built-in
+- 📋 **One-Click Copy** - Share links instantly
+- ⚡ **Zero Latency** - Instant feedback on actions
+
+</td>
+</tr>
+</table>
+
+## 🛠️ Tech Stack
+
 <div align="center">
 
 ### Backend
@@ -66,59 +77,43 @@ A lightning-fast poll application where anyone can create polls, share unique li
 ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![React Router](https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white)
 
-### 📊 Database Schema (Supabase PostgreSQL)
+### Deployment
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
+![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)
 
-```mermaid
-erDiagram
-    polls ||--o{ options : has
-    polls ||--o{ votes : receives
-    options ||--o{ votes : gets
-    
-    polls {
-        uuid id PK
-        text question
-        timestamp created_at
-    }
-    options {
-        uuid id PK
-        uuid poll_id FK
-        text text
-        int position
-    }
-    votes {
-        bigint id PK
-        uuid poll_id FK
-        uuid option_id FK
-        text ip_address
-        text fingerprint
-        timestamp voted_at
-    }
+</div>
+
+---
+
+## 📊 Database Schema (Supabase PostgreSQL)
+
 ```sql
 polls
-  - id (TEXT, PRIMARY KEY)
+  - id (UUID, PRIMARY KEY)
   - question (TEXT)
-  - created_at (DATETIME)
+  - created_at (TIMESTAMP)
 
 options
-  - id (TEXT, PRIMARY KEY)
-> **Assignment Requirement:** "Include at least two mechanisms that reduce repeat/abusive voting"
-
-### 1. 🌐 IP Address TrackingEY)
+  - id (UUID, PRIMARY KEY)
+  - poll_id (UUID, FOREIGN KEY → polls.id)
   - text (TEXT)
   - position (INTEGER)
 
 votes
-  - id (INTEGER, PRIMARY KEY)
-  - poll_id (TEXT, FOREIGN KEY)
-  - option_id (TEXT, FOREIGN KEY)
+  - id (BIGSERIAL, PRIMARY KEY)
+  - poll_id (UUID, FOREIGN KEY → polls.id)
+  - option_id (UUID, FOREIGN KEY → options.id)
   - ip_address (TEXT)
   - fingerprint (TEXT)
-  - voted_at (DATETIME)
+  - voted_at (TIMESTAMP)
 ```
 
-## 🛡️ 🔍 Browser Fingerprinting
+## 🛡️ Anti-Abuse Mechanisms
 
-### 1. IP Address Tracking ⛔
+> **Assignment Requirement:** "Include at least two mechanisms that reduce repeat/abusive voting"
+
+### 1. 🌐 IP Address Tracking
+
 **What it prevents:**
 - Multiple votes from the same network/device
 - Basic abuse from users trying to vote multiple times
@@ -133,7 +128,10 @@ votes
 - Users with dynamic IPs could potentially vote again after IP change
 - VPN/proxy users can bypass by switching servers
 
-### 2. Browser Fingerprinting 🔍
+---
+
+### 2. 🔍 Browser Fingerprinting
+
 **What it prevents:**
 - Same-device voting across different browsers/incognito modes
 - More persistent tracking than cookies alone
@@ -142,7 +140,7 @@ votes
 - Generates a unique fingerprint from browser characteristics:
   - User agent, language, screen resolution
   - Color depth, timezone, hardware specs
-  - Can🚦 Rate Limitinggnature
+  - Canvas rendering signature
 - Stores fingerprint in `localStorage` for persistence
 - SHA-256 hash ensures privacy while maintaining uniqueness
 
@@ -151,7 +149,10 @@ votes
 - Different browsers on same device get different fingerprints
 - Sophisticated users can spoof browser characteristics
 
-### 3. Rate Limiting 🚦 (Bonus)
+---
+
+### 3. 🚦 Rate Limiting (Bonus)
+
 **What it prevents:**
 - Automated bot attacks
 - Rapid spam voting attempts
@@ -178,7 +179,7 @@ votes
 - **< 2 options** - Enforced minimum requirement
 - **Invalid option selection** - Verified against database
 - **XSS prevention** - Input sanitization via React's automatic escaping
-- **SQL injection** - Parameterized queries with prepared statements
+- **SQL injection** - Parameterized queries via Supabase client
 
 ### 3. Race Conditions
 - **Simultaneous votes** - Database constraints ensure one vote per fingerprint/IP
@@ -205,27 +206,23 @@ votes
    - No horizontal scaling (Socket.io requires sticky sessions)
    - Solution: Implement Redis adapter for Socket.io
 
-2. **SQLite Database**
-   - Not ideal for high concurrency or distributed systems
-   - Solution: Migrate to PostgreSQL/MySQL for production
-
-3. **IP-based Tracking**
+2. **IP-based Tracking**
    - Shared IPs (schools, offices) can't vote multiple times
    - Solution: Implement optional email verification or OAuth
 
-4. **Browser Fingerprinting**
+3. **Browser Fingerprinting**
    - Can be cleared or spoofed by determined users
    - Solution: Combine with server-side session tracking
 
-5. **No Poll Expiration**
+4. **No Poll Expiration**
    - Polls remain active indefinitely
    - Solution: Add optional expiration dates and auto-archival
 
-6. **No Vote Editing**
+5. **No Vote Editing**
    - Users cannot change their vote once submitted
    - Solution: Add "change vote" feature with time limits
 
-7. **No Authentication**
+6. **No Authentication**
    - Anyone can create unlimited polls
    - Solution: Add rate limiting on poll creation, optional accounts
 
@@ -247,6 +244,7 @@ votes
 ### Prerequisites
 - Node.js 18+ and npm
 - Git
+- Supabase account (free tier)
 
 ### Local Development
 
@@ -270,7 +268,22 @@ cd ../frontend
 npm install
 ```
 
-3. **Start the development servers**
+3. **Set up Supabase**
+   - Create a project at https://supabase.com
+   - Run the SQL from `backend/supabase-schema.sql` in the SQL Editor
+   - Get your Project URL and Anon Key from Settings → API
+
+4. **Configure environment variables**
+
+Create `backend/.env`:
+```env
+PORT=3000
+CLIENT_URL=http://localhost:5173
+SUPABASE_URL=your_supabase_url
+SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+5. **Start the development servers**
 
 Option A - Run both servers concurrently:
 ```bash
@@ -289,93 +302,71 @@ cd frontend
 npm run dev
 ```
 
-4. **Access the application**
+6. **Access the application**
 - Frontend: http://localhost:5173
 - Backend API: http://localhost:3000
 - API Health: http://localhost:3000/api/health
 
 ## 🌐 Deployment
 
-### Option 1: Railway (Recommended)
+### Deploy to Vercel (Frontend) + Render (Backend)
 
-**Backend:**
-1. Create new project on Railway
-2. Connect GitHub repo
-3. Set root directory to `/backend`
-4. Add environment variable: `CLIENT_URL=https://your-frontend-url.com`
+#### 1. Push to GitHub
+```bash
+git add .
+git commit -m "Ready for deployment"
+git push origin main
+```
+
+#### 2. Deploy Backend to Render
+
+1. Go to https://render.com/ and sign in with GitHub
+2. Click "New +" → "Web Service"
+3. Connect your repository
+4. Configure:
+   - **Root Directory**: `backend`
+   - **Build Command**: `npm install`
+   - **Start Command**: `node server.js`
+   - **Environment Variables**:
+     ```
+     NODE_ENV=production
+     CLIENT_URL=https://your-frontend-url.vercel.app
+     SUPABASE_URL=your_supabase_url
+     SUPABASE_ANON_KEY=your_supabase_anon_key
+     ```
+5. Deploy and save the URL
+
+#### 3. Deploy Frontend to Vercel
+
+1. Go to https://vercel.com/ and sign in with GitHub
+2. Click "Add New..." → "Project"
+3. Import your repository
+4. Configure:
+   - **Framework Preset**: Vite
+   - **Root Directory**: `frontend`
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `dist`
+   - **Environment Variables**:
+     ```
+     VITE_SERVER_URL=https://your-backend-url.onrender.com
+     ```
 5. Deploy
 
-**Frontend:**
-1. Create new project on Railway
-2. Connect same GitHub repo
-3. Set root directory to `/frontend`
-4. Add environment variable: `VITE_SERVER_URL=https://your-backend-url.railway.app`
-5. Deploy
+#### 4. Update Backend CLIENT_URL
 
-### Option 2: Render
-
-**Backend:**
-```yaml
-# render.yaml
-services:
-  - type: web
-    name: poll-backend
-    env: node
-    buildCommand: cd backend && npm install
-    startCommand: cd backend && npm start
-    envVars:
-      - key: CLIENT_URL
-        value: https://your-frontend.onrender.com
-```
-
-**Frontend:**
-```yaml
-  - type: web
-    name: poll-frontend
-    env: static
-    buildCommand: cd frontend && npm install && npm run build
-    staticPublishPath: ./frontend/dist
-    envVars:
-      - key: VITE_SERVER_URL
-        value: https://your-backend.onrender.com
-```
-
-### Option 3: Vercel (Frontend) + Railway/Render (Backend)
-
-**Frontend on Vercel:**
-1. Import GitHub repo
-2. Framework: Vite
-3. Root directory: `frontend`
-4. Build command: `npm run build`
-5. Output directory: `dist`
-6. Environment variable: `VITE_SERVER_URL`
-
-**Backend:** Use Railway or Render as above
-
-### Environment Variables
-
-**Backend (.env):**
-```env
-PORT=3000
-CLIENT_URL=http://localhost:5173
-```
-
-**Frontend (.env):**
-```env
-VITE_SERVER_URL=http://localhost:3000
-```
+Go back to Render, update the `CLIENT_URL` environment variable with your Vercel URL, and redeploy.
 
 ## 📁 Project Structure
 
 ```
 itsmyscreen/
 ├── backend/
-│   ├── database.js          # SQLite setup & queries
+│   ├── database.js          # Supabase queries
 │   ├── server.js            # Express + Socket.io server
+│   ├── supabase-schema.sql  # Database schema
 │   ├── package.json
-│   └── .gitignore
+│   └── .env                 # Environment variables (not in git)
 ├── frontend/
-│   ├── public/
 │   ├── src/
 │   │   ├── pages/
 │   │   │   ├── Home.jsx         # Landing page
@@ -390,9 +381,9 @@ itsmyscreen/
 │   ├── index.html
 │   ├── vite.config.js
 │   ├── tailwind.config.js
-│   ├── package.json
-│   └── .gitignore
+│   └── package.json
 ├── package.json             # Root package for scripts
+├── .gitignore
 └── README.md
 ```
 
@@ -436,4 +427,10 @@ Built for the Full-Stack Assignment: Real-Time Poll Rooms
 
 ---
 
-**Note:** Replace placeholder URLs with your actual deployment links before submission.
+<div align="center">
+
+**⭐ Star this repo if you found it helpful!**
+
+Made with ❤️ using React, Node.js, Socket.io & Supabase
+
+</div>
