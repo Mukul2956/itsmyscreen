@@ -37,6 +37,10 @@ initDatabase();
 const pollRooms = new Map();
 
 // API Routes
+app.get('/', (req, res) => {
+  res.json({ status: 'ok', message: 'itsmyscreen API is running', timestamp: new Date().toISOString() });
+});
+
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });

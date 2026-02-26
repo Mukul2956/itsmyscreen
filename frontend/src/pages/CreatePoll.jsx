@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../utils/api';
 
 export default function CreatePoll() {
   const navigate = useNavigate();
@@ -46,7 +46,7 @@ export default function CreatePoll() {
     setLoading(true);
 
     try {
-      const response = await axios.post('/api/polls', {
+      const response = await api.post('/api/polls', {
         question: question.trim(),
         options: validOptions
       });

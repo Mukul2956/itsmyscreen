@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../utils/api';
 import { connectSocket, disconnectSocket, joinPoll, leavePoll } from '../utils/socket';
 import { getFingerprint } from '../utils/fingerprint';
 
@@ -39,7 +39,7 @@ export default function ViewPoll() {
 
   const loadPoll = async () => {
     try {
-      const response = await axios.get(`/api/polls/${pollId}`);
+      const response = await api.get(`/api/polls/${pollId}`);
       setPoll(response.data.poll);
       setVotes(Array.isArray(response.data.votes) ? response.data.votes : []);
       setShareLink(window.location.href);
@@ -62,7 +62,7 @@ export default function ViewPoll() {
     try {
       const fingerprint = await getFingerprint();
       
-      await axios.post(`/api/polls/${pollId}/vote`, {
+      await api.post(`/api/polls/${pollId}/vote`, {
         optionId: selectedOption,
         fingerprint
       });
