@@ -10,7 +10,7 @@
 
 **A modern, full-stack web application for creating polls and collecting votes with real-time updates powered by WebSockets.**
 
-🚀 **Live App:** [itsmyscreen-self.vercel.app](https://itsmyscreen-self.vercel.app)
+ **Live App:** [itsmyscreen-self.vercel.app](https://itsmyscreen-self.vercel.app)
 
 [Features](#-features) • [Tech Stack](#-tech-stack) • [Documentation](#-anti-abuse-mechanisms) • [Getting Started](#-installation--setup)
 
@@ -39,7 +39,7 @@ A lightning-fast poll application where anyone can create polls, share unique li
 <tr>
 <td width="50%">
 
-### 🚀 Core Functionality
+###  Core Functionality
 - 📝 **Instant Poll Creation** - 2-10 options supported
 - 🔗 **Unique Shareable Links** - UUID-based URLs
 - 🗳️ **One Vote per User** - Single-choice voting
@@ -241,7 +241,7 @@ votes
 - 🏆 **Poll Templates** - Pre-made poll formats
 - 🌐 **Internationalization** - Multi-language support
 
-## 🚀 Installation & Setup
+##  Installation & Setup
 
 ### Prerequisites
 - Node.js 18+ and npm
